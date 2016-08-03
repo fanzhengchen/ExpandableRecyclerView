@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ExpandableRecyclerView</string>
+
+    <string-array name="string_array">
+        <item>Mark</item>
+        <item>Icey</item>
+        <item>Jessica</item>
+        <item>Sid</item>
+        <item>Andrew</item>
+        <item>Larry</item>
+        <item>July</item>
+        <item>Lola</item>
+        <item>Remon</item>
+    </string-array>
+</resources>
