@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
     @BindArray(R.array.string_array)
     String[] names;
 
-    ArrayList<ViewItem> items = new ArrayList<>();
+    ArrayList<ParentItem> items = new ArrayList<>();
 
     ItemTouchHelper itemTouchHelper;
 
@@ -34,13 +34,13 @@ public class MainActivity extends AppCompatActivity implements OnStartDragListen
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         int index = 0;
-        for (String name : names) {
-            ArrayList<String> childNames = new ArrayList<>();
-            for (int i = 0; i < 4; ++i) {
-                ++index;
-                childNames.add(Integer.toHexString(index));
+        for (int i = 0; i < names.length; ++i) {
+            String name = names[i];
+            ArrayList<ChildItem> childItems = new ArrayList<>();
+            for (int j = 0; j < 5; ++j) {
+                childItems.add(new ChildItem(name, i));
             }
-            items.add(new ViewItem(name, childNames));
+            items.add(new ParentItem(name, childItems));
         }
         adapter = new Adapter(items, this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(

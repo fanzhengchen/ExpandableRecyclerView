@@ -26,15 +26,15 @@ import itemhelper.OnStartDragListener;
 public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder, Adapter.ChildViewHolder> implements ItemTouchHelperAdapter {
 
     private final int CELL_HEIGHT = 100;
-    private List<ViewItem> names = null;
+    private List<ParentItem> parentItems = null;
     private final OnStartDragListener onStartDragListener;
+    private boolean allCollapsed = false;
 
-    public Adapter(@NonNull List<ViewItem> names, OnStartDragListener listener) {
+    public Adapter(@NonNull List<ParentItem> names, OnStartDragListener listener) {
         super(names);
-        this.names = names;
+        this.parentItems = names;
         this.onStartDragListener = listener;
     }
-
 
     @Override
     public ParentViewHolder onCreateParentViewHolder(ViewGroup parent) {
@@ -54,27 +54,38 @@ public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder,
 
     @Override
     public void onBindParentViewHolder(ParentViewHolder parentViewHolder, int position, ParentListItem parentListItem) {
-        ViewItem item = (ViewItem) parentListItem;
+        ParentItem item = (ParentItem) parentListItem;
         parentViewHolder.fillText(item.getName());
+        parentViewHolder.setItemType(-1);
     }
 
     @Override
     public void onBindChildViewHolder(ChildViewHolder childViewHolder, int position, Object childListItem) {
-        String name = (String) childListItem;
-        childViewHolder.fillText(name);
-
+        ChildItem childItem = (ChildItem) childListItem;
+        childViewHolder.fillText(childItem.getName());
+        childViewHolder.setItemType(childItem.getParent());
     }
 
     @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(mItemList, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
+    public boolean onItemMove(int fromPosition, int toPosition, boolean isParent) {
+        if (isParent) {
+            Collections.swap(parentItems, fromPosition, toPosition);
+            notifyParentItemMoved(fromPosition, toPosition);
+        } else {
+            Collections.swap(mItemList, fromPosition, toPosition);
+            notifyItemMoved(fromPosition, toPosition);
+        }
         return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
 
+    }
+
+    @Override
+    public boolean allCollapsed() {
+        return allCollapsed;
     }
 
     /**
@@ -85,6 +96,7 @@ public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder,
         TextView textView;
 
         private View parent;
+        private int itemType;
 
         public ChildViewHolder(View itemView) {
             super(itemView);
@@ -112,6 +124,13 @@ public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder,
 
         }
 
+        public int getItemType() {
+            return itemType;
+        }
+
+        public void setItemType(int itemType) {
+            this.itemType = itemType;
+        }
     }
 
     /**
@@ -123,6 +142,7 @@ public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder,
         TextView textView;
 
         private View parent;
+        private int itemType;
 
         public ParentViewHolder(View itemView) {
             super(itemView);
@@ -136,9 +156,28 @@ public class Adapter extends ExpandableRecyclerAdapter<Adapter.ParentViewHolder,
 
         @OnLongClick(R.id.parent)
         public boolean onLongClick(View view) {
-            onStartDragListener.onStartDrag(this);
+            allCollapsed = false;
+            collapseAllParents();
+            allCollapsed = true;
+            onStartDragListener.onStartDrag(ParentViewHolder.this);
             return true;
         }
 
+
+        public int getItemType() {
+            return itemType;
+        }
+
+        public void setItemType(int itemType) {
+            this.itemType = itemType;
+        }
+
+        public void collapse() {
+            collapseView();
+        }
+
+        public void expand() {
+            expandView();
+        }
     }
 }

@@ -7,18 +7,19 @@ import java.util.List;
 /**
  * Created by fanzhengchen on 8/3/16.
  */
-public class ViewItem implements ParentListItem {
+public class ParentItem implements ParentListItem {
 
-    private List<String> childrenItems = null;
+    private List<ChildItem> childrenItems = null;
     private String name;
+    private int position;
 
-    public ViewItem(String name, List<String> childrenItems) {
+    public ParentItem(String name, List<ChildItem> childrenItems) {
         this.name = name;
         this.childrenItems = childrenItems;
     }
 
     @Override
-    public List<?> getChildItemList() {
+    public List<ChildItem> getChildItemList() {
         return childrenItems;
     }
 

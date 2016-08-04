@@ -5,7 +5,9 @@ package itemhelper;
  */
 public interface ItemTouchHelperAdapter {
 
-    public boolean onItemMove(int fromPosition, int toPosition);
+    public boolean onItemMove(int fromPosition, int toPosition, boolean isParent);
 
     public void onItemDismiss(int position);
+
+    public boolean allCollapsed();
 }
